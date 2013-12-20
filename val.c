@@ -4,10 +4,10 @@
 #include <string.h>
 #include "val.h"
 
-val_ptr val_new_num(char *s) {
+val_ptr val_new_int(char *s) {
   val_ptr r = malloc(sizeof(*r));
   r->type = T_INT;
-  r->i = atoi(s);
+  r->s = strdup(s);
   return r;
 }
 
@@ -20,31 +20,32 @@ val_ptr val_new_s(char *s) {
   return r;
 }
 
-val_ptr val_new_op(val_ptr op, ...) {
+val_ptr val_append(val_ptr op, val_ptr v) {
+  op->nkid++;
+  op->kid = realloc(op->kid, op->nkid * sizeof(struct val_s));
+  op->kid[op->nkid - 1] = v;
+  return op;
+}
+
+val_ptr val_append0(val_ptr op, ...) {
   assert(op->type == T_STRING);
-  val_ptr r = malloc(sizeof(*r));
-  r->type = T_STRING;
-  r->s = strdup(op->s);
-  val_free(op);
-  r->kid = 0;
-  r->nkid = 0;
   va_list params;
   va_start(params, op);
   for(;;) {
     val_ptr v = va_arg(params, val_ptr);
     if (!v) break;
-    r->nkid++;
-    r->kid = realloc(r->kid, r->nkid * sizeof(struct val_s));
-    r->kid[r->nkid - 1] = v;
+    val_append(op, v);
   }
   va_end(params);
-  return r;
+  return op;
 }
 
-void val_append(val_ptr list, val_ptr v) {
-  list->nkid++;
-  list->kid = realloc(list->kid, list->nkid * sizeof(struct val_s));
-  list->kid[list->nkid - 1] = v;
+val_ptr val_fun(val_ptr fun, val_ptr args) {
+  assert(fun->type == T_STRING);
+  assert(!fun->nkid);
+  args->s = fun->s;
+  free(fun);
+  return args;
 }
 
 void val_free(val_ptr v) {

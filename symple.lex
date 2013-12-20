@@ -1,6 +1,5 @@
 %option outfile="flex.c" header-file="flex.h"
-%option reentrant
-%option bison-bridge
+%option reentrant bison-bridge
 %option noyywrap nounput noinput
 
 %{
@@ -10,8 +9,8 @@
 
 %%
 
-[0-9]*                    return *yylval = val_new_num(yytext), NUM;
-[[:alpha:]_][[:alnum:]_]* return *yylval = val_new_s(yytext), ID;
+[0-9]*                    *yylval = val_new_int(yytext); return NUM;
+[[:alpha:]_][[:alnum:]_]* *yylval = val_new_s(yytext); return ID;
 \+  OP(OP_ADD);
 -   OP(OP_ADD);
 \*  OP(OP_MUL);
@@ -21,6 +20,6 @@
 \)  return RPAR;
 ,   return COMMA;
 #.*$      // Comment.
-[ \t\r\n]*  // Whitespace.
+[ \t\r]*  // Whitespace.
 
 %%
