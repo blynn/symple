@@ -4,16 +4,9 @@
 #include <string.h>
 #include "val.h"
 
-val_ptr val_new_int(char *s) {
+val_ptr val_new(int type, char *s) {
   val_ptr r = malloc(sizeof(*r));
-  r->type = T_INT;
-  r->s = strdup(s);
-  return r;
-}
-
-val_ptr val_new_s(char *s) {
-  val_ptr r = malloc(sizeof(*r));
-  r->type = T_STRING;
+  r->type = type;
   if (s) r->s = strdup(s);
   r->nkid = 0;
   r->kid = 0;

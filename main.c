@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   yyscan_t scanner;
   if (yylex_init(&scanner)) exit(1);
   YY_BUFFER_STATE buf = argc > 1 ? yy_scan_string(argv[1], scanner) : 0;
-  int f(struct val_s *v) {
+  int f(val_ptr v) {
     val_print_pre(v);
     putchar('\n');
     val_print_tree("", v);

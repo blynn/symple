@@ -4,22 +4,25 @@
 
 %{
 #include "bison.h"
-#define OP(PREC) *yylval = val_new_s(yytext); return PREC
+#define RET(TOKEN) return yyextra = TOKEN
+#define S(TOKEN) *yylval = val_new(T_STRING, yytext); RET(TOKEN)
+static int can_end_line(int n) {
+  return n == NUM || n == ID || n == ')';
+}
 %}
 
 %%
 
-[0-9]*                    *yylval = val_new_int(yytext); return NUM;
-[[:alpha:]_][[:alnum:]_]* *yylval = val_new_s(yytext); return ID;
-\+  OP(OP_ADD);
--   OP(OP_ADD);
-\*  OP(OP_MUL);
-\/  OP(OP_MUL);
-\^  OP(OP_EXP);
-\(  return LPAR;
-\)  return RPAR;
-,   return COMMA;
+[0-9]*                    *yylval = val_new(T_INT, yytext); RET(NUM);
+[[:alpha:]_][[:alnum:]_]* S(ID);
+\+  S(OP_ADD);
+-   S(OP_ADD);
+\*  S(OP_MUL);
+\/  S(OP_MUL);
+\^  S(OP_EXP);
 #.*$      // Comment.
 [ \t\r]*  // Whitespace.
+\n  if (can_end_line(yyextra)) return ';';
+. return yytext[0];
 
 %%

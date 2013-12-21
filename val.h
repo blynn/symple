@@ -14,8 +14,7 @@ struct val_s {
 typedef struct val_s *val_ptr;
 typedef int (*val_callback_t)(val_ptr);
 
-val_ptr val_new_int(char *s);
-val_ptr val_new_s(char *s);
+val_ptr val_new(int type, char *s);
 void val_free(val_ptr v);
 val_ptr val_fun(val_ptr fun, val_ptr args);
 
