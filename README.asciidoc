@@ -16,12 +16,17 @@ The main program reads an expression from standard input or from the first
 command-line argument if present, and pretty-prints it:
 
 ------------------------------------------------------------------------------
-$ ./main 'sin(x)*cos(y) + e^x'
+$ ./main 'sin(x)*cos(y) + e^x; 1*2+3/4;'
 +(*(sin(x), cos(y)), ^(e, x))
 +─┬─*─┬─sin───x
   │   └─cos───y
   └─^─┬─e
       └─x
++(*(1, 2), /(3, 4))
++─┬─*─┬─1
+  │   └─2
+  └─/─┬─3
+      └─4
 ------------------------------------------------------------------------------
 
 == License ==
