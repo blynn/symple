@@ -2,7 +2,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include "val.h"
+// bison.h includes val.h
+#include "bison.h"
+#include "flex.h"
 
 val_ptr val_new(int type, char *s) {
   val_ptr r = malloc(sizeof(*r));
@@ -54,4 +56,13 @@ void val_free(val_ptr v) {
     break;
   }
   free(v);
+}
+
+void val_parse_forall(char *s, val_callback_t callback) {
+  yyscan_t scanner;
+  if (yylex_init(&scanner)) exit(1);
+  YY_BUFFER_STATE buf = s ? yy_scan_string(s, scanner) : 0;
+  if (yyparse(scanner, callback)) exit(1);
+  yy_delete_buffer(buf, scanner);
+  yylex_destroy(scanner);
 }

@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "bison.h"
-#include "flex.h"
+#include <string.h>
+#include "val.h"
 
 // Prints a parse tree in pre-order.
 void val_print_pre(struct val_s *v) {
@@ -46,9 +46,6 @@ void val_print_tree(const char *prefix, struct val_s *v) {
 }
 
 int main(int argc, char *argv[]) {
-  yyscan_t scanner;
-  if (yylex_init(&scanner)) exit(1);
-  YY_BUFFER_STATE buf = argc > 1 ? yy_scan_string(argv[1], scanner) : 0;
   int f(val_ptr v) {
     val_print_pre(v);
     putchar('\n');
@@ -56,8 +53,6 @@ int main(int argc, char *argv[]) {
     val_free(v);
     return 0;
   }
-  if (yyparse(scanner, f)) exit(1);
-  yy_delete_buffer(buf, scanner);
-  yylex_destroy(scanner);
+  val_parse_forall(argc > 1 ? argv[1] : 0, f);
   return 0;
 }

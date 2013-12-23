@@ -12,11 +12,11 @@ I'm uploading this project in its current state because it took some effort to
 write a basic parser. Even if I proceed no further, at least I'll have a
 complete example of a re-entrant Flex/Bison parser.
 
-The main program reads an expression from standard input or from the first
+The 'main' program reads an expression from standard input or from the first
 command-line argument if present, and pretty-prints it:
 
 ------------------------------------------------------------------------------
-$ ./main 'sin(x)*cos(y) + e^x; 1*2+3/4;'
+$ ./main 'sin(x)*cos(y) + e^x; 1*2+3/4'
 +(*(sin(x), cos(y)), ^(e, x))
 +─┬─*─┬─sin───x
   │   └─cos───y

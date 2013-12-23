@@ -20,9 +20,11 @@ static int can_end_line(int n) {
 \*  S(OP_MUL);
 \/  S(OP_MUL);
 \^  S(OP_EXP);
-#.*$      // Comment.
+#.*       // Comment.
 [ \t\r]*  // Whitespace.
-\n  if (can_end_line(yyextra)) return ';';
-. return yytext[0];
+\n  if (can_end_line(yyextra)) RET(';');
+.   RET(yytext[0]);
+
+<<EOF>> if (can_end_line(yyextra)) RET(';'); else yyterminate();
 
 %%

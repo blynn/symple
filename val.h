@@ -23,3 +23,7 @@ val_ptr val_append(val_ptr op, val_ptr v);
 
 // Adds a NULL-terminated list of children to 'op'.
 val_ptr val_append0(val_ptr op, ...);
+
+// Parses expressions from a given string, and calls a given callback on each.
+// If 's' is NULL, then parses from standard input.
+void val_parse_forall(char *s, val_callback_t callback);

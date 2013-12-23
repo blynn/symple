@@ -22,7 +22,7 @@ int yyerror(yyscan_t scanner, val_callback_t callback, const char *msg) {
 }
 }
 
-%initial-action { yyset_extra(';', scanner); }
+%initial-action { yyset_extra(0, scanner); }
 
 %token NUM ID
 %left OP_ADD
@@ -32,9 +32,7 @@ int yyerror(yyscan_t scanner, val_callback_t callback, const char *msg) {
 %%
 
 input:  // Empty
-    | input line
-
-line: expr ';' { callback($$ = $1); }
+    | input expr ';' { callback($$ = $2); }
 
 expr: unary
     | expr OP_ADD expr { $$ = val_append0($2, $1, $3, 0); }
