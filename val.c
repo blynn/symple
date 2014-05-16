@@ -5,6 +5,7 @@
 // bison.h includes val.h
 #include "bison.h"
 #include "flex.h"
+#include "util.h"
 
 val_ptr val_new(int type, char *s) {
   val_ptr r = malloc(sizeof(*r));
@@ -60,9 +61,9 @@ void val_free(val_ptr v) {
 
 void val_parse_forall(char *s, val_callback_t callback) {
   yyscan_t scanner;
-  if (yylex_init(&scanner)) exit(1);
+  if (yylex_init(&scanner)) die("yylex_init error");
   YY_BUFFER_STATE buf = s ? yy_scan_string(s, scanner) : 0;
-  if (yyparse(scanner, callback)) exit(1);
+  if (yyparse(scanner, callback)) die("parse error");
   yy_delete_buffer(buf, scanner);
   yylex_destroy(scanner);
 }
