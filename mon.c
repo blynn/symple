@@ -32,9 +32,6 @@ int mon_deg_cmp(mon_t x, mon_t y) {
   }_;}));
 }
 
-BLT* global_var;
-intptr_t global_n;
-
 static void eval(val_ptr v, mon_t x) {
   if (v->type == T_INT) {
     mpz_t z;
@@ -109,15 +106,15 @@ static void eval(val_ptr v, mon_t x) {
         it->data = (void *) (sgn * pwr * (intptr_t) it->data);
       }_;}));
       break;
-    default: die("bad op:%s", v->s);
+    default: die("bad op: %s", v->s);
     }
     free(y);
   } else if (v->nkid == 1) {
     eval(v->kid[0], x);
-    if (v->s[0] == '-') mpq_neg(x->q, x->q);
+    if (v->s[0] != '-') die("bad op: %s", v->s);
+    mpq_neg(x->q, x->q);
   } else {
     EXPECT(!v->nkid);
-    if (!blt_put_if_absent(global_var, v->s, (void *) global_n)) global_n++;
     mpq_set_ui(x->q, 1, 1);
     blt_put(x->deg, v->s, (void *) 1);
   }
@@ -135,7 +132,6 @@ void mon_out_str(FILE* fp, mon_t r) {
 }
 
 int main(int argc, char *argv[]) {
-  global_var = blt_new();
   int f(val_ptr v) {
     mon_t r = mon_new();
     eval(v, r);
